@@ -24,88 +24,84 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.player = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
-        self.player.enableRate = true
-        self.player.volume = 1.0
-        self.player.delegate = self
+        player = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
+        player.enableRate = true
+        player.volume = 1.0
+        player.delegate = self
         
-        self.audioEngine = AVAudioEngine()
-        self.avAudioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
+        audioEngine = AVAudioEngine()
+        avAudioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
+ 
     func stopAllAudio() {
-        self.player.stop()
-        self.audioEngine.stop()
+        player.stop()
+        audioEngine.stop()
     }
     
     func resetAllButtons() {
-        self.snailButton.enabled = true
-        self.rabbitButton.enabled = true
-        //self.chipMunkButton.enabled = true
-        //self.darthVaderButton.enabled = true
+        snailButton.enabled = true
+        rabbitButton.enabled = true
+        //chipMunkButton.enabled = true
+        //darthVaderButton.enabled = true
     }
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer!, successfully flag: Bool) {
-        self.resetAllButtons()
+        resetAllButtons()
     }
     
     func playAudio(fast:Bool = false) {
-        self.stopAllAudio()
-        self.player.rate = (fast) ? 2 : 0.5
-        self.player.currentTime = 0
-        self.player.play()
+        stopAllAudio()
+        player.rate = (fast) ? 2 : 0.5
+        player.currentTime = 0
+        player.play()
     }
 
     @IBAction func playSlowAction(sender: UIButton) {
-        self.resetAllButtons()
-        self.snailButton.enabled = false
-        self.playAudio()
+        resetAllButtons()
+        snailButton.enabled = false
+        playAudio()
     }
     
     @IBAction func playFastAction(sender: UIButton) {
-        self.resetAllButtons()
-        self.rabbitButton.enabled = false
-        self.playAudio(fast: true)
+        resetAllButtons()
+        rabbitButton.enabled = false
+        playAudio(fast: true)
     }
     
     @IBAction func playChipmunkAudio(sender: UIButton) {
-        //self.chipMunkButton.enabled = false
-        self.playAudioWithVariablePitch(1000)
+        //chipMunkButton.enabled = false
+        playAudioWithVariablePitch(1000)
     }
     
     @IBAction func playDarthVaderAudio(sender: UIButton) {
-        //self.darthVaderButton.enabled = false
-        self.playAudioWithVariablePitch(-1000)
+        //darthVaderButton.enabled = false
+        playAudioWithVariablePitch(-1000)
     }
     
     func playAudioWithVariablePitch(pitch: Float) {
-        self.stopAllAudio()
-        self.resetAllButtons()
+        stopAllAudio()
+        resetAllButtons()
         
-        self.audioEngine.reset()
+        audioEngine.reset()
         
         var playerNode = AVAudioPlayerNode()
-        self.audioEngine.attachNode(playerNode)
+        audioEngine.attachNode(playerNode)
         
         var timePitch = AVAudioUnitTimePitch()
         timePitch.pitch = pitch
-        self.audioEngine.attachNode(timePitch)
+        audioEngine.attachNode(timePitch)
         
-        self.audioEngine.connect(playerNode, to: timePitch, format: nil)
-        self.audioEngine.connect(timePitch, to: audioEngine.outputNode, format: nil)
+        audioEngine.connect(playerNode, to: timePitch, format: nil)
+        audioEngine.connect(timePitch, to: audioEngine.outputNode, format: nil)
         
-        self.audioEngine.startAndReturnError(nil)
+        audioEngine.startAndReturnError(nil)
         
         /*
             TODO: Implement a delegate method which should be invoked when AVAudioEngine or AVAudioPlayerNode finishes playing
                   Dear code reviewer, maybe you're aware of the desired completion handler or delegate?
         */
         
-        playerNode.scheduleFile(self.avAudioFile, atTime: nil, completionHandler:{() -> Void in
+        playerNode.scheduleFile(avAudioFile, atTime: nil, completionHandler:{() -> Void in
             // This does not work as expected: this completion handler is obviously called when the file is successfuly queued.
             //self.resetAllButtons()
         })
@@ -114,7 +110,7 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     @IBAction func stopAllAudioAction(sender: UIButton) {
-        self.stopAllAudio()
-        self.resetAllButtons()
+        stopAllAudio()
+        resetAllButtons()
     }
 }
