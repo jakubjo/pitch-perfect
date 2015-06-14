@@ -61,11 +61,13 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     }
 
     @IBAction func playSlowAction(sender: UIButton) {
+        self.resetAllButtons()
         self.snailButton.enabled = false
         self.playAudio()
     }
     
     @IBAction func playFastAction(sender: UIButton) {
+        self.resetAllButtons()
         self.rabbitButton.enabled = false
         self.playAudio(fast: true)
     }
@@ -81,7 +83,8 @@ class PlaySoundsViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     func playAudioWithVariablePitch(pitch: Float) {
-        self.stopAllAudio()        
+        self.stopAllAudio()
+        self.resetAllButtons()
         
         self.audioEngine.reset()
         
